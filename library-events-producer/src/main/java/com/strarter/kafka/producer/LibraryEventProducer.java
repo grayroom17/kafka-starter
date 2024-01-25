@@ -8,6 +8,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
 import lombok.experimental.NonFinal;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.kafka.clients.producer.ProducerRecord;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.kafka.core.KafkaTemplate;
 import org.springframework.kafka.support.SendResult;
@@ -42,6 +43,27 @@ public class LibraryEventProducer {
                 handleSuccess(key, value, sendResult);
             }
         });
+    }
+
+    public CompletableFuture<SendResult<Integer, String>> sendLibraryEventWithProducerRecord(LibraryEvent libraryEvent) throws JsonProcessingException {
+        Integer key = libraryEvent.libraryEventId();
+        String value = objectMapper.writeValueAsString(libraryEvent);
+
+        ProducerRecord<Integer, String> producerRecord = buildProducerRecord(key, value);
+
+        CompletableFuture<SendResult<Integer, String>> completableFuture = kafkaTemplate.send(producerRecord);
+
+        return completableFuture.whenComplete((sendResult, throwable) -> {
+            if (throwable != null) {
+                handleError(throwable);
+            } else {
+                handleSuccess(key, value, sendResult);
+            }
+        });
+    }
+
+    private ProducerRecord<Integer, String> buildProducerRecord(Integer key, String value) {
+        return new ProducerRecord<>(topic, key, value);
     }
 
     public SendResult<Integer, String> synchronousSendLibraryEvent(LibraryEvent libraryEvent)
