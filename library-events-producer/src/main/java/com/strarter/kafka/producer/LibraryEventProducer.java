@@ -14,6 +14,7 @@ import org.springframework.kafka.support.SendResult;
 import org.springframework.stereotype.Component;
 
 import java.util.concurrent.CompletableFuture;
+import java.util.concurrent.ExecutionException;
 
 @FieldDefaults(level = AccessLevel.PRIVATE, makeFinal = true)
 @RequiredArgsConstructor
@@ -41,6 +42,18 @@ public class LibraryEventProducer {
                 handleSuccess(key, value, sendResult);
             }
         });
+    }
+
+    public SendResult<Integer, String> synchronousSendLibraryEvent(LibraryEvent libraryEvent)
+            throws JsonProcessingException, ExecutionException, InterruptedException {
+        Integer key = libraryEvent.libraryEventId();
+        String value = objectMapper.writeValueAsString(libraryEvent);
+
+        SendResult<Integer, String> sendResult = kafkaTemplate.send(topic, key, value).get();
+
+        handleSuccess(key, value, sendResult);
+
+        return sendResult;
     }
 
     private void handleSuccess(Integer key, String value, SendResult<Integer, String> sendResult) {
