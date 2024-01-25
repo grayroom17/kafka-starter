@@ -14,6 +14,8 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import java.util.concurrent.ExecutionException;
+
 @FieldDefaults(level = AccessLevel.PRIVATE, makeFinal = true)
 @RequiredArgsConstructor
 @Slf4j
@@ -23,10 +25,18 @@ public class LibraryEventsController {
 
     LibraryEventProducer libraryEventProducer;
 
-    @PostMapping("/library-event")
-    ResponseEntity<LibraryEvent> postLibraryEvent(@RequestBody LibraryEvent libraryEvent) throws JsonProcessingException {
+    @PostMapping("/async-event")
+    ResponseEntity<LibraryEvent> sendEventAsync(@RequestBody LibraryEvent libraryEvent) throws JsonProcessingException {
         log.info("libraryEvent : {} ", libraryEvent);
         libraryEventProducer.sendLibraryEvent(libraryEvent);
+        return ResponseEntity.status(HttpStatus.CREATED).body(libraryEvent);
+    }
+
+    @PostMapping("/sync-event")
+    ResponseEntity<LibraryEvent> sendEventSync(@RequestBody LibraryEvent libraryEvent)
+            throws JsonProcessingException, ExecutionException, InterruptedException {
+        log.info("libraryEvent : {} ", libraryEvent);
+        libraryEventProducer.synchronousSendLibraryEvent(libraryEvent);
         return ResponseEntity.status(HttpStatus.CREATED).body(libraryEvent);
     }
 

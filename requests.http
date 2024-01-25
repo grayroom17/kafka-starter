@@ -1,5 +1,19 @@
 ###
-POST http://localhost:8080/v1/library-event
+POST http://localhost:8080/v1/async-event
+Content-Type: application/json
+
+{
+  "libraryEventId": null,
+  "libraryEventType": "NEW",
+  "book": {
+    "bookId": 456,
+    "bookName": "Kafka Using Spring Boot",
+    "bookAuthor": "Dilip"
+  }
+}
+
+###
+POST http://localhost:8080/v1/sync-event
 Content-Type: application/json
 
 {
