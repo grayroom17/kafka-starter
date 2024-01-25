@@ -32,6 +32,13 @@ public class LibraryEventsController {
         return ResponseEntity.status(HttpStatus.CREATED).body(libraryEvent);
     }
 
+    @PostMapping("/async-event-with-producer-record")
+    ResponseEntity<LibraryEvent> sendEventAsyncWithProducerRecord(@RequestBody LibraryEvent libraryEvent) throws JsonProcessingException {
+        log.info("libraryEvent : {} ", libraryEvent);
+        libraryEventProducer.sendLibraryEventWithProducerRecord(libraryEvent);
+        return ResponseEntity.status(HttpStatus.CREATED).body(libraryEvent);
+    }
+
     @PostMapping("/sync-event")
     ResponseEntity<LibraryEvent> sendEventSync(@RequestBody LibraryEvent libraryEvent)
             throws JsonProcessingException, ExecutionException, InterruptedException {
