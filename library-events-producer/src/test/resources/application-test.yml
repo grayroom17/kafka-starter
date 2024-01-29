@@ -1,0 +1,6 @@
+spring:
+
+  test:
+    constructor:
+      autowire:
+        mode:
