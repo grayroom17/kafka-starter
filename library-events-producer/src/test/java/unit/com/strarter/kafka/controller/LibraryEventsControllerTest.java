@@ -35,7 +35,6 @@ class LibraryEventsControllerTest {
         Mockito.when(libraryEventProducer.sendLibraryEvent(isA(LibraryEvent.class)))
                 .thenReturn(null);
 
-
         String value = objectMapper.writeValueAsString(TestUtil.libraryEventRecord());
 
         mockMvc.perform(MockMvcRequestBuilders.post("/v1/async-event")
@@ -45,10 +44,22 @@ class LibraryEventsControllerTest {
     }
 
     @Test
-    void sendEventAsyncWithProducerRecord() throws Exception {
+    void sendEventAsync_invalidValues() throws Exception {
         Mockito.when(libraryEventProducer.sendLibraryEvent(isA(LibraryEvent.class)))
                 .thenReturn(null);
 
+        String value = objectMapper.writeValueAsString(TestUtil.bookRecordWithInvalidValues());
+
+        mockMvc.perform(MockMvcRequestBuilders.post("/v1/async-event")
+                        .content(value)
+                        .contentType(MediaType.APPLICATION_JSON))
+                .andExpect(status().isBadRequest());
+    }
+
+    @Test
+    void sendEventAsyncWithProducerRecord() throws Exception {
+        Mockito.when(libraryEventProducer.sendLibraryEvent(isA(LibraryEvent.class)))
+                .thenReturn(null);
 
         String value = objectMapper.writeValueAsString(TestUtil.libraryEventRecord());
 
@@ -63,7 +74,6 @@ class LibraryEventsControllerTest {
         Mockito.when(libraryEventProducer.sendLibraryEvent(isA(LibraryEvent.class)))
                 .thenReturn(null);
 
-
         String value = objectMapper.writeValueAsString(TestUtil.libraryEventRecord());
 
         mockMvc.perform(MockMvcRequestBuilders.post("/v1/async-event")
@@ -76,7 +86,6 @@ class LibraryEventsControllerTest {
     void sendEventSync() throws Exception {
         Mockito.when(libraryEventProducer.sendLibraryEvent(isA(LibraryEvent.class)))
                 .thenReturn(null);
-
 
         String value = objectMapper.writeValueAsString(TestUtil.libraryEventRecord());
 

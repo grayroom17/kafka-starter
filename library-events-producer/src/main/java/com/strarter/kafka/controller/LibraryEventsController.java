@@ -3,6 +3,7 @@ package com.strarter.kafka.controller;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.strarter.kafka.domain.LibraryEvent;
 import com.strarter.kafka.producer.LibraryEventProducer;
+import jakarta.validation.Valid;
 import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
@@ -26,7 +27,7 @@ public class LibraryEventsController {
     LibraryEventProducer libraryEventProducer;
 
     @PostMapping("/async-event")
-    ResponseEntity<LibraryEvent> sendEventAsync(@RequestBody LibraryEvent libraryEvent) throws JsonProcessingException {
+    ResponseEntity<LibraryEvent> sendEventAsync(@RequestBody @Valid LibraryEvent libraryEvent) throws JsonProcessingException {
         log.info("libraryEvent : {} ", libraryEvent);
         libraryEventProducer.sendLibraryEvent(libraryEvent);
         return ResponseEntity.status(HttpStatus.CREATED).body(libraryEvent);
