@@ -14,9 +14,9 @@ import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 
 import static org.mockito.ArgumentMatchers.isA;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
-//@ExtendWith(MockitoExtension.class)
 @WebMvcTest(LibraryEventsController.class)
 class LibraryEventsControllerTest {
 
@@ -48,12 +48,14 @@ class LibraryEventsControllerTest {
         Mockito.when(libraryEventProducer.sendLibraryEvent(isA(LibraryEvent.class)))
                 .thenReturn(null);
 
-        String value = objectMapper.writeValueAsString(TestUtil.bookRecordWithInvalidValues());
+        String value = objectMapper.writeValueAsString(TestUtil.libraryEventRecordWithInvalidBook());
 
+        String expectedErrorMessage = "book.bookId - must not be null, book.bookName - must not be blank";
         mockMvc.perform(MockMvcRequestBuilders.post("/v1/async-event")
                         .content(value)
                         .contentType(MediaType.APPLICATION_JSON))
-                .andExpect(status().isBadRequest());
+                .andExpect(status().isBadRequest())
+                .andExpect(content().string(expectedErrorMessage));
     }
 
     @Test
