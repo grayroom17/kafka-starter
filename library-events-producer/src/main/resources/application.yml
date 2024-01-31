@@ -5,6 +5,9 @@ spring:
     producer:
       key-serializer: org.apache.kafka.common.serialization.IntegerSerializer
       value-serializer: org.apache.kafka.common.serialization.StringSerializer
+      retries: 10
+#      properties:
+#        retries: 10
 
 kafka:
   topic:
