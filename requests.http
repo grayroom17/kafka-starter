@@ -41,18 +41,51 @@ Content-Type: application/json
 }
 
 ###
-//PUT WITH ID - 1
-//--------------
-//curl -i \
-//-d '{"libraryEventId":1,"libraryEventType": "UPDATE","book":{"bookId":456,"bookName":"Kafka Using Spring Boot 2.X","bookAuthor":"Dilip"}}' \
-//-H "Content-Type: application/json" \
-//-X PUT http://localhost:8080/v1/libraryevent
-//
+PUT http://localhost:8080/v1/update-event
+Content-Type: application/json
+
+{
+  "libraryEventId": 1,
+  "libraryEventType": "UPDATE",
+  "book": {
+    "bookId": 456,
+    "bookName": "Kafka Using Spring Boot 2.X",
+    "bookAuthor": "Dilip"
+  }
+}
+###
+
+PUT http://localhost:8080/v1/update-event
+Content-Type: application/json
+
+{
+  "libraryEventId": 1,
+  "libraryEventType": "NEW",
+  "book": {
+    "bookId": 456,
+    "bookName": "Kafka Using Spring Boot 2.X",
+    "bookAuthor": "Dilip"
+  }
+}
+###
+
+PUT http://localhost:8080/v1/update-event
+Content-Type: application/json
+
+{
+  "libraryEventType": "UPDATE",
+  "book": {
+    "bookId": 456,
+    "bookName": "Kafka Using Spring Boot 2.X",
+    "bookAuthor": "Dilip"
+  }
+}
+###
+
 //curl -i \
 //-d '{"libraryEventId":2,"libraryEventType": "UPDATE","book":{"bookId":456,"bookName":"Kafka Using Spring Boot 2.X","bookAuthor":"Dilip"}}' \
 //-H "Content-Type: application/json" \
-//-X PUT http://localhost:8080/v1/libraryevent
-//
+//-X PUT http: //localhost:8080/v1/libraryevent
 //
 //
 //PUT WITH ID
