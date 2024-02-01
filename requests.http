@@ -41,6 +41,20 @@ Content-Type: application/json
 }
 
 ###
+POST http://localhost:8080/v1/async-event-with-producer-record-with-custom-headers
+Content-Type: application/json
+
+{
+  "libraryEventId": null,
+  "libraryEventType": "NEW",
+  "book": {
+    "bookId": 456,
+    "bookName": "Kafka Using Spring Boot",
+    "bookAuthor": "Dilip"
+  }
+}
+
+###
 PUT http://localhost:8080/v1/update-event
 Content-Type: application/json
 
