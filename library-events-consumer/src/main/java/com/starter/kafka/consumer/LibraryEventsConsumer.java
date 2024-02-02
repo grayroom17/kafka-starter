@@ -12,10 +12,8 @@ import org.springframework.stereotype.Component;
 
 import java.io.IOException;
 
-@FieldDefaults(level = AccessLevel.PRIVATE, makeFinal = true)
-@RequiredArgsConstructor
 @Slf4j
-@Component
+//@Component
 public class LibraryEventsConsumer {
 
     @KafkaListener(topics = "library-events")
