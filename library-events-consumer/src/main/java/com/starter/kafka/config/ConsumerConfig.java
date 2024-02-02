@@ -10,14 +10,15 @@ import org.springframework.kafka.listener.ContainerProperties;
 @Configuration
 public class ConsumerConfig {
 
-//    @Bean
-//    ConcurrentKafkaListenerContainerFactory<?, ?> kafkaListenerContainerFactory(
-//            ConcurrentKafkaListenerContainerFactoryConfigurer configurer,
-//            ConsumerFactory<Object, Object> kafkaConsumerFactory) {
-//        ConcurrentKafkaListenerContainerFactory<Object, Object> factory = new ConcurrentKafkaListenerContainerFactory<>();
-//        configurer.configure(factory, kafkaConsumerFactory);
+    @Bean
+    ConcurrentKafkaListenerContainerFactory<?, ?> kafkaListenerContainerFactory(
+            ConcurrentKafkaListenerContainerFactoryConfigurer configurer,
+            ConsumerFactory<Object, Object> kafkaConsumerFactory) {
+        ConcurrentKafkaListenerContainerFactory<Object, Object> factory = new ConcurrentKafkaListenerContainerFactory<>();
+        configurer.configure(factory, kafkaConsumerFactory);
+        factory.setConcurrency(3);
 //        factory.getContainerProperties().setAckMode(ContainerProperties.AckMode.MANUAL);
-//        return factory;
-//    }
+        return factory;
+    }
 
 }
