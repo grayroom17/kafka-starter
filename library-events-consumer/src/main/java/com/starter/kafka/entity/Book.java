@@ -13,7 +13,7 @@ import lombok.experimental.FieldDefaults;
 public class Book {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
+//    @GeneratedValue(strategy = GenerationType.IDENTITY)
     Integer bookId;
 
     String bookName;
