@@ -30,7 +30,7 @@ public class LibraryEventProducer {
     ObjectMapper objectMapper;
 
     @NonFinal
-    @Value("${kafka.topic.library}")
+    @Value("${spring.kafka.template.default-topic}")
     public String topic;
 
     public CompletableFuture<SendResult<Integer, String>> sendLibraryEvent(LibraryEvent libraryEvent) throws JsonProcessingException {
