@@ -1,5 +1,6 @@
 package com.starter.kafka.entity;
 
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;
 import lombok.*;
 import lombok.experimental.FieldDefaults;
@@ -19,7 +20,9 @@ public class LibraryEvent {
     @Enumerated(EnumType.STRING)
     LibraryEventType libraryEventType;
 
+    @JsonManagedReference
     @ToString.Exclude
+    @EqualsAndHashCode.Exclude
     @OneToOne(mappedBy = "libraryEvent",
             cascade = CascadeType.ALL)
     Book book;

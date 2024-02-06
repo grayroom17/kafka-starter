@@ -1,5 +1,7 @@
 package com.starter.kafka.entity;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import jakarta.persistence.*;
 import lombok.*;
 import lombok.experimental.FieldDefaults;
@@ -20,6 +22,7 @@ public class Book {
 
     String bookAuthor;
 
+    @JsonBackReference
     @OneToOne
     @JoinColumn(name = "libraryEventId")
     LibraryEvent libraryEvent;
