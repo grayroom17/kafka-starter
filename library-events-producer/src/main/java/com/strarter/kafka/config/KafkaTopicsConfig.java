@@ -9,7 +9,7 @@ import org.springframework.kafka.config.TopicBuilder;
 @Configuration
 public class KafkaTopicsConfig {
 
-    @Value("${kafka.topic.library}")
+    @Value("${spring.kafka.template.default-topic}")
     String eventName;
 
     @Bean

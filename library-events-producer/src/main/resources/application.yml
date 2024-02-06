@@ -1,6 +1,8 @@
 spring:
 
   kafka:
+    template:
+      default-topic: library-events
     bootstrap-servers: localhost:9092, localhost:9093, localhost:9094
     producer:
       key-serializer: org.apache.kafka.common.serialization.IntegerSerializer
@@ -8,7 +10,3 @@ spring:
       retries: 10
 #      properties:
 #        retries: 10
-
-kafka:
-  topic:
-    library: library-events
