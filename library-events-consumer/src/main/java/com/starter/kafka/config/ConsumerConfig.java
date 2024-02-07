@@ -4,10 +4,13 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.boot.autoconfigure.kafka.ConcurrentKafkaListenerContainerFactoryConfigurer;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.dao.RecoverableDataAccessException;
 import org.springframework.kafka.config.ConcurrentKafkaListenerContainerFactory;
 import org.springframework.kafka.core.ConsumerFactory;
 import org.springframework.kafka.listener.DefaultErrorHandler;
 import org.springframework.util.backoff.FixedBackOff;
+
+import java.util.List;
 
 @Slf4j
 @Configuration
@@ -16,10 +19,18 @@ public class ConsumerConfig {
     public DefaultErrorHandler errorHandler() {
         FixedBackOff fixedBackOff = new FixedBackOff(1000L, 2);
         DefaultErrorHandler errorHandler = new DefaultErrorHandler(fixedBackOff);
+
         errorHandler.setRetryListeners((consumerRecord, ex, deliveryAttempt)
                 -> log.info("Failed Record in Retry Listener, Exception : {} , deliveryAttempt : {} ",
                 ex.getMessage(),
                 deliveryAttempt));
+
+        List<Class<? extends Exception>> notRetryableExceptions = List.of(IllegalArgumentException.class);
+        notRetryableExceptions.forEach(errorHandler::addNotRetryableExceptions);
+
+//        List<Class<? extends Exception>> retryableExceptions = List.of(RecoverableDataAccessException.class);
+//        retryableExceptions.forEach(errorHandler::addRetryableExceptions);
+
         return errorHandler;
     }
 

@@ -9,6 +9,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.kafka.clients.consumer.ConsumerRecord;
+import org.springframework.dao.RecoverableDataAccessException;
 import org.springframework.stereotype.Service;
 
 import static com.starter.kafka.entity.LibraryEventType.NEW;
@@ -31,6 +32,9 @@ public class LibraryEventsService {
     }
 
     private void validate(LibraryEvent libraryEvent) {
+        if (libraryEvent != null && libraryEvent.getLibraryEventId().equals(999)) {
+            throw new RecoverableDataAccessException("Temporary Network Issue");
+        }
         if (libraryEvent.getLibraryEventType().equals(NEW)) {
             if (libraryEvent.getLibraryEventId() != null) {
                 throw new IllegalArgumentException("LibraryEvent id should be null when create new LibraryEvent");
