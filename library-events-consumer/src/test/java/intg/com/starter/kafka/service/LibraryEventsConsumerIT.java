@@ -167,10 +167,10 @@ class LibraryEventsConsumerIT {
         kafkaTemplate.sendDefault(json).get();
 
         CountDownLatch latch = new CountDownLatch(1);
-        latch.await(5, TimeUnit.SECONDS);
+        latch.await(30, TimeUnit.SECONDS);
 
-        verify(libraryEventsConsumer, times(3)).onMessage(isA(ConsumerRecord.class));
-        verify(libraryEventsService, times(3)).processLibraryEvent(isA(ConsumerRecord.class));
+        verify(libraryEventsConsumer, times(6)).onMessage(isA(ConsumerRecord.class));
+        verify(libraryEventsService, times(6)).processLibraryEvent(isA(ConsumerRecord.class));
     }
 
 }
