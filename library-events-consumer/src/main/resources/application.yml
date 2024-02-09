@@ -26,3 +26,8 @@ spring:
   h2:
     console:
       enabled: true
+
+kafka:
+  topics:
+    retry: library-events.RETRY
+    dlt: library-events.DLT
