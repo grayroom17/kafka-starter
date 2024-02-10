@@ -7,7 +7,6 @@ import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.kafka.clients.consumer.ConsumerRecord;
-import org.apache.kafka.common.header.Header;
 import org.springframework.kafka.annotation.KafkaListener;
 import org.springframework.stereotype.Component;
 
@@ -15,20 +14,16 @@ import org.springframework.stereotype.Component;
 @RequiredArgsConstructor
 @Slf4j
 @Component
-public class LibraryEventsConsumer {
+public class LibraryEventsRetryListener {
 
     LibraryEventsService libraryEventsService;
 
-    @KafkaListener(topics = "library-events",
-            groupId = "library-events-listener-group")
+    @KafkaListener(topics = "${kafka.topics.retry}",
+            groupId = "retry-listener-group")
     public void onMessage(ConsumerRecord<Integer, String> consumerRecord) throws JsonProcessingException {
-        Header authoritiesHeader = consumerRecord.headers().lastHeader("Authorities");
-        if (authoritiesHeader != null) {
-            String authorities = new String(authoritiesHeader.value());
-            log.info("Token : {}", authorities);
-        }
-
-        log.info("ConsumerRecord : {}", consumerRecord);
+        log.info("ConsumerRecord in Retry Consumer: {}", consumerRecord);
+        consumerRecord.headers()
+                .forEach(header -> log.info("Key : {} , value : {} ", header.key(), new String(header.value())));
         libraryEventsService.processLibraryEvent(consumerRecord);
     }
 
