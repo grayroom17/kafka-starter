@@ -31,6 +31,7 @@ import org.springframework.test.context.TestPropertySource;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.TimeUnit;
@@ -49,7 +50,8 @@ import static org.mockito.Mockito.verify;
         partitions = 3)
 @TestPropertySource(properties = {
         "spring.kafka.producer.bootstrap-servers=${spring.embedded.kafka.brokers}",
-        "spring.kafka.consumer.bootstrap-servers=${spring.embedded.kafka.brokers}"
+        "spring.kafka.consumer.bootstrap-servers=${spring.embedded.kafka.brokers}",
+        "kafka.retryListener.startup=false"
 })
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 class LibraryEventsConsumerIT {
@@ -89,9 +91,16 @@ class LibraryEventsConsumerIT {
 
     @BeforeEach
     void setUp() {
-        for (MessageListenerContainer messageListenerContainer : endpointRegistry.getListenerContainers()) {
-            ContainerTestUtils.waitForAssignment(messageListenerContainer, embeddedKafkaBroker.getPartitionsPerTopic());
-        }
+//        for (MessageListenerContainer messageListenerContainer : endpointRegistry.getListenerContainers()) {
+//            ContainerTestUtils.waitForAssignment(messageListenerContainer, embeddedKafkaBroker.getPartitionsPerTopic());
+//        }
+
+        MessageListenerContainer container = endpointRegistry.getListenerContainers()
+                .stream()
+                .filter(messageListenerContainer -> Objects.equals(messageListenerContainer.getGroupId(), "library-events-listener-group"))
+                .findFirst().get();
+
+        ContainerTestUtils.waitForAssignment(container, embeddedKafkaBroker.getPartitionsPerTopic());
     }
 
     @AfterEach
