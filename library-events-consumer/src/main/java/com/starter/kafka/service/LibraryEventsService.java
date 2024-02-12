@@ -32,7 +32,7 @@ public class LibraryEventsService {
     }
 
     private void validate(LibraryEvent libraryEvent) {
-        if (libraryEvent != null && libraryEvent.getLibraryEventId().equals(999)) {
+        if (libraryEvent != null && (libraryEvent.getLibraryEventId() != null && libraryEvent.getLibraryEventId().equals(999))) {
             throw new RecoverableDataAccessException("Temporary Network Issue");
         }
         if (libraryEvent.getLibraryEventType().equals(NEW)) {
