@@ -58,9 +58,9 @@ public class LibraryEventsController {
     public ResponseEntity<?> updateLibraryEvent(@RequestBody @Valid LibraryEvent libraryEvent) throws JsonProcessingException {
         log.info("libraryEvent : {} ", libraryEvent);
 
-        if (libraryEvent.libraryEventId() == null) {
-            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Please pass the LibraryEventId");
-        }
+//        if (libraryEvent.libraryEventId() == null) {
+//            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Please pass the LibraryEventId");
+//        }
 
         if (!libraryEvent.libraryEventType().equals(UPDATE)) {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Only UPDATE event type is supported");

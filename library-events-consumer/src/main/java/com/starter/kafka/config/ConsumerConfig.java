@@ -65,8 +65,8 @@ public class ConsumerConfig {
                 ex.getMessage(),
                 deliveryAttempt));
 
-//        List<Class<? extends Exception>> notRetryableExceptions = List.of(IllegalArgumentException.class);
-//        notRetryableExceptions.forEach(errorHandler::addNotRetryableExceptions);
+        List<Class<? extends Exception>> notRetryableExceptions = List.of(IllegalArgumentException.class);
+        notRetryableExceptions.forEach(errorHandler::addNotRetryableExceptions);
 
         List<Class<? extends Exception>> retryableExceptions = List.of(RecoverableDataAccessException.class);
         retryableExceptions.forEach(errorHandler::addRetryableExceptions);
