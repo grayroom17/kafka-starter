@@ -4,6 +4,7 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.starter.kafka.consumer.LibraryEventsConsumer;
 import com.starter.kafka.entity.LibraryEvent;
+import com.starter.kafka.repository.FailureRecordRepository;
 import com.starter.kafka.repository.LibraryEventsRepository;
 import lombok.experimental.NonFinal;
 import org.apache.kafka.clients.consumer.Consumer;
@@ -72,6 +73,9 @@ class LibraryEventsConsumerIT {
 
     @Autowired
     ObjectMapper objectMapper;
+
+    @Autowired
+    FailureRecordRepository failureRecordRepository;
 
     @SpyBean
     LibraryEventsConsumer libraryEventsConsumer;
@@ -222,6 +226,33 @@ class LibraryEventsConsumerIT {
         ConsumerRecord<Integer, String> consumerRecord = KafkaTestUtils.getSingleRecord(consumer, retryTopic);
         log.info("consumerRecord is : {}", consumerRecord.value());
         assertEquals(json, consumerRecord.value());
+    }
+
+    @Test
+    void onMessage_update_validationFail_persistFailureRecordToDb() throws ExecutionException, InterruptedException, JsonProcessingException {
+        String json = """
+                {
+                  "libraryEventId": null,
+                  "libraryEventType": "UPDATE",
+                  "book": {
+                    "bookId": 456,
+                    "bookName": "Kafka Using Spring Boot",
+                    "bookAuthor": "Dilip"
+                  }
+                }""";
+        kafkaTemplate.sendDefault(json).get();
+
+        CountDownLatch latch = new CountDownLatch(1);
+        latch.await(5, TimeUnit.SECONDS);
+
+        verify(libraryEventsConsumer, times(1)).onMessage(isA(ConsumerRecord.class));
+        verify(libraryEventsService, times(1)).processLibraryEvent(isA(ConsumerRecord.class));
+
+        assertEquals(1, failureRecordRepository.count());
+
+        failureRecordRepository.findAll()
+                .forEach(failureRecord -> log.info("failureRecord : {}", failureRecord));
+
     }
 
 }

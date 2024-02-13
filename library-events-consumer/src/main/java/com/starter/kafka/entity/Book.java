@@ -1,8 +1,10 @@
 package com.starter.kafka.entity;
 
 import com.fasterxml.jackson.annotation.JsonBackReference;
-import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
-import jakarta.persistence.*;
+import jakarta.persistence.Entity;
+import jakarta.persistence.Id;
+import jakarta.persistence.JoinColumn;
+import jakarta.persistence.OneToOne;
 import lombok.*;
 import lombok.experimental.FieldDefaults;
 
@@ -15,7 +17,6 @@ import lombok.experimental.FieldDefaults;
 public class Book {
 
     @Id
-//    @GeneratedValue(strategy = GenerationType.IDENTITY)
     Integer bookId;
 
     String bookName;

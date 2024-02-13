@@ -1,10 +1,12 @@
 package com.starter.kafka.config;
 
+import com.starter.kafka.service.FailureRecordService;
 import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
 import lombok.experimental.NonFinal;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.kafka.clients.consumer.ConsumerRecord;
 import org.apache.kafka.common.TopicPartition;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.autoconfigure.kafka.ConcurrentKafkaListenerContainerFactoryConfigurer;
@@ -14,6 +16,7 @@ import org.springframework.dao.RecoverableDataAccessException;
 import org.springframework.kafka.config.ConcurrentKafkaListenerContainerFactory;
 import org.springframework.kafka.core.ConsumerFactory;
 import org.springframework.kafka.core.KafkaTemplate;
+import org.springframework.kafka.listener.ConsumerRecordRecoverer;
 import org.springframework.kafka.listener.DeadLetterPublishingRecoverer;
 import org.springframework.kafka.listener.DefaultErrorHandler;
 import org.springframework.kafka.support.ExponentialBackOffWithMaxRetries;
@@ -26,7 +29,11 @@ import java.util.List;
 @Configuration
 public class ConsumerConfig {
 
+    private static final String RETRY = "RETRY";
+    private static final String DEAD = "DEAD";
+
     KafkaTemplate<Integer, String> kafkaTemplate;
+    FailureRecordService failureRecordService;
 
     @NonFinal
     @Value("${kafka.topics.retry}")
@@ -35,6 +42,18 @@ public class ConsumerConfig {
     @NonFinal
     @Value("${kafka.topics.dlt}")
     String deadLetterTopic;
+
+    public ConsumerRecordRecoverer consumerRecordRecoverer() {
+        return (consumerRecord, e) -> {
+            log.error("Exception in consumerRecordRecoverer : {}", e.getMessage(), e);
+            ConsumerRecord<Integer, String> record = (ConsumerRecord<Integer, String>) consumerRecord;
+            if (e.getCause() instanceof RecoverableDataAccessException) {
+                failureRecordService.save(record, e, RETRY);
+            } else {
+                failureRecordService.save(record, e, DEAD);
+            }
+        };
+    }
 
     public DeadLetterPublishingRecoverer publishingRecoverer() {
         return new DeadLetterPublishingRecoverer(kafkaTemplate,
@@ -57,7 +76,8 @@ public class ConsumerConfig {
         exponentialBackOff.setMultiplier(2);
         exponentialBackOff.setMaxInterval(4000);
         DefaultErrorHandler errorHandler = new DefaultErrorHandler(
-                publishingRecoverer(),
+//                publishingRecoverer(),
+                consumerRecordRecoverer(),
                 exponentialBackOff);
 
         errorHandler.setRetryListeners((consumerRecord, ex, deliveryAttempt)
