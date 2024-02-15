@@ -10,3 +10,6 @@ spring:
       retries: 10
 #      properties:
 #        retries: 10
+    admin:
+      properties:
+        bootstrap.servers: localhost:9092, localhost:9093, localhost:9094
