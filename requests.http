@@ -59,7 +59,7 @@ PUT http://localhost:8080/v1/update-event
 Content-Type: application/json
 
 {
-  "libraryEventId": 999,
+  "libraryEventId": 1,
   "libraryEventType": "UPDATE",
   "book": {
     "bookId": 456,
