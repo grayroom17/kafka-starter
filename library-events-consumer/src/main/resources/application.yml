@@ -13,6 +13,15 @@ spring:
       key-deserializer: org.apache.kafka.common.serialization.IntegerDeserializer
       value-deserializer: org.apache.kafka.common.serialization.StringDeserializer
       group-id: library-events-listener-group
+      ssl:
+        trust-store-location: 'file:\D:\MyProjects\study\kafka-starter\secrets\kafka.consumer.truststore.jks'
+        trust-store-password: confluent
+        key-store-location: 'file:\D:\MyProjects\study\kafka-starter\secrets\kafka.consumer.keystore.jks'
+        key-store-password: confluent
+      properties:
+        security:
+          protocol: SSL
+        ssl.endpoint.identification.algorithm:
 
   datasource:
     driver-class-name: org.h2.Driver
